@@ -1,6 +1,6 @@
 <!---
-# title: Hello World Post Title
-# issueID: 1
+title: Hello World Post Title
+issueID: 1
 -->
 
 # Hello World
