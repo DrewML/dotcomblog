@@ -3,6 +3,8 @@ title: Empty Destructuring Patterns in JavaScript
 description: Digging into why JavaScript supports empty destructuring patterns
 -->
 
+# Empty Destructuring Patterns in JavaScript
+
 @RyanCavanaugh posted a [fun quiz on Twitter](https://twitter.com/searyanc/status/1572730317433352192):
 
 <p align="center">
