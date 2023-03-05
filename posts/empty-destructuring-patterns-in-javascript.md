@@ -1,4 +1,7 @@
-# Empty Destructuring Patterns in JavaScript
+<!---
+title: Empty Destructuring Patterns in JavaScript
+description: Digging into why JavaScript supports empty destructuring patterns
+-->
 
 @RyanCavanaugh posted a [fun quiz on Twitter](https://twitter.com/searyanc/status/1572730317433352192):
 
