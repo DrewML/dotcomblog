@@ -128,17 +128,23 @@ Although you author queries as strings, Apollo Client requires each query to be 
 
 **Example**
 ```js
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery } from "@apollo/client";
 
 const QUERY = gql`
-   query {
-      currentUser { id }
-   }
+  query {
+    currentUser {
+      id
+    }
+  }
 `;
 
-export default UserIDComponent() {
-   const { data } = useQuery(QUERY);
-   return <div>{data ? data.currentUser.id : 'Loading'}</div>;
+export default function UserIDComponent() {
+  const { data } = useQuery(QUERY);
+  return (
+    <div>
+      {data ? data.currentUser.id : "Loading"}
+    </div>
+  );
 }
 ```
 
