@@ -11,7 +11,6 @@ description: Digging into why JavaScript supports empty destructuring patterns
   <a href="https://twitter.com/searyanc/status/1572730317433352192">
     <img
          src="https://user-images.githubusercontent.com/5233399/191644573-e93f5961-7920-4ebb-b1b3-cbfa029dfa54.png"
-         width="80%"
          alt="screenshot of the linked twitter quiz, showing an example of JavaScript destructuring with no variables in the pattern, and a survey with 3 options: Works as a no-op, fails to parse, or throws an error"
     />
   </a>
