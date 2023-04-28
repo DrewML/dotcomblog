@@ -1,7 +1,9 @@
 <!---
 title: Apollo Client Performance
 description: A deep-dive into the performance of Apollo Client in a real React application in Production
+hero: https://user-images.githubusercontent.com/5233399/235226908-024df0ff-3a76-4304-850c-2707e6907ebc.jpg
 -->
+
 
 # Apollo Client Real World Performance on a Large Ecommerce Site
 I work on a large Ecommerce site for a major grocery chain. The application is built using a few tools that have been popular in the front-end space for the last few years:
