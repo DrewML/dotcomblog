@@ -1,7 +1,7 @@
 <!---
 title: Apollo Client Performance
 description: A deep-dive into the performance of Apollo Client in a real React application in Production
-hero: https://user-images.githubusercontent.com/5233399/235226908-024df0ff-3a76-4304-850c-2707e6907ebc.jpg
+socialImage: https://user-images.githubusercontent.com/5233399/235226908-024df0ff-3a76-4304-850c-2707e6907ebc.jpg
 -->
 
 
