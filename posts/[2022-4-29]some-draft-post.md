@@ -1,6 +1,7 @@
 <!---
 title: Draft Post Test
 description: Testing the draft post feature
+draft: true
 -->
 
 
