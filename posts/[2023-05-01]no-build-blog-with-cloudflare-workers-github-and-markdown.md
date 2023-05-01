@@ -9,4 +9,4 @@ draft: true
 
 I've been trying to start blogging consistently for years. Writing is _hard_, and finding the motivation to write is even more of a struggle. So, I did what most developers do when faced with this challenge.
 
-## My Dream Blogging Platform
+## I Built a Blog Engine
