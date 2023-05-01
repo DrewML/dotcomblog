@@ -25,5 +25,7 @@ Before starting to build, I spent a few weeks (cough, months) jotting down notes
 - **Support for Comments**: Visitors should be able to leave feedback on posts (and ideally spam can be limited)
 - **Support for Server-Side Code**: Fully static sites can be limiting. I want to have the ability to add logic on the server that runs at request time, not at build time
 - **Support Posting and Editing from a Browser**: I don't want to pull up an IDE just to do some writing. It's distracting!
+- **Markdown++**: Want to author posts in Markdown, but retain the ability to drop down to HTML when Markdown is too limiting
+- **"Widget" Support**: Want the ability to author reusable functionality, like a video widget that lazy initializes YouTube embeds
 
 [^1]: I can call it an "Engine" or a "Platform" all I want, but that's an awfully fancy name for a few TypeScript files and a collection of Markdown documents.
