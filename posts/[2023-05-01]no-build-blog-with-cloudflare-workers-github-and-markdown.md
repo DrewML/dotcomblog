@@ -27,5 +27,20 @@ Before starting to build, I spent a few weeks (cough, months) jotting down notes
 - **Support Posting and Editing from a Browser**: I don't want to pull up an IDE just to do some writing. It's distracting!
 - **Markdown++**: Want to author posts in Markdown, but retain the ability to drop down to HTML when Markdown is too limiting
 - **"Widget" Support**: Want the ability to author reusable functionality, like a video widget that lazy initializes YouTube embeds
+- **Minimal Infrastructure Complexity to Manage**: Rules out AWS immediately 😅
+
+Based on these requirements, I made some decisions on the tech stack
+
+### Tech Stack Justification
+
+- **Cloudflare Workers** for the server
+  - "Serverless"
+  - Cloudflare's Cache can act as a good persistence layer for any data fetched via HTTP
+  - Fairly effortless to deploy updates
+- **GitHub** for content management
+  - Great built-in Markdown editor on mobile and desktop web
+  - Good APIs for indexing and fetching data
+  - Support for transforming Markdown to HTML
+
 
 [^1]: I can call it an "Engine" or a "Platform" all I want, but that's an awfully fancy name for a few TypeScript files and a collection of Markdown documents.
