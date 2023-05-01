@@ -4,6 +4,8 @@ description: Documenting my experience building a Markdown blog engine for mysel
 socialImage: https://user-images.githubusercontent.com/5233399/235488415-310fbaad-a1e5-475e-b929-c4e87ef2811d.jpg
 -->
 
+# No Build Blog with Cloudflare Workers, GitHub, and Markdown
+
 I've been trying to start blogging consistently for years. Writing is _hard_, and finding the motivation to write is even more of a struggle. So, I did what most developers do when faced with this challenge.
 
 ## My Dream Blogging Platform
