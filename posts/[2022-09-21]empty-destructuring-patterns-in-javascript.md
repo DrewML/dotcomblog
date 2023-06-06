@@ -10,7 +10,7 @@ description: Digging into why JavaScript supports empty destructuring patterns
 <p align="center">
   <a href="https://twitter.com/searyanc/status/1572730317433352192">
     <img
-         src="https://github.com/DrewML/dotcomblog/assets/5233399/8d7c30b6-b86f-4a6b-a7c2-ab08707d2b66"
+         src="https://user-images.githubusercontent.com/5233399/243551502-1112cc6b-938e-4d2b-8b28-363f84e4dd7c.png"
          alt="screenshot of the linked twitter quiz, showing an example of JavaScript destructuring with no variables in the pattern, and a survey with 3 options: Works as a no-op, fails to parse, or throws an error"
     />
   </a>
