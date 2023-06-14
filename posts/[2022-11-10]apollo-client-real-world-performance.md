@@ -13,9 +13,7 @@ I work on a large Ecommerce site for a major grocery chain. The application is b
 - Apollo Client
 - React-Apollo Bindings
 
-The purpose of this document is to provide a real life example of the performance cliffs that are present in Apollo Client, and should be considered when deciding to build an application with it.
-
-The goal is _not_ to discredit any of the hard work from the folks at Apollo the company. _However_, marketing a library and encouraging wide adoption does come with the responsibility of ensuring the web stays fast for everyone, and it's important for web developers to highlight when tools fall short of their promises.
+The intent of this post is to document the performance cliffs I've encountered using Apollo Client in a real application. The goal is _not_ to discredit any of the hard work from the folks at Apollo the company.
 
 ## How SSR in React Works
 
@@ -24,9 +22,9 @@ Before digging into the performance challenges with Apollo Client, let's go thro
 ### History
 Until recently, React did not provide a first-class API to perform asynchronous operations _during rendering_ while executing on the server-side[^1]. This posed a challenge for 3rd party library authors that often wrote their APIs thinking of React's client-first model.
 
-Some folks in the open-source world came up with the concept of "two-pass rendering" to try and address this. The general idea is that you render the React app once to initiate async work, and when the async work is complete you render the React app a second time. On the second render, the React app can _synchronously_ read from the cache that was populated in the first render.
+Some folks in the open-source world came up with the concept of "two-pass rendering" to try and address this (though this can be a misnomer[^2]). The general idea is that you render the React app once to initiate async work, and when the async work is complete you render the React app a second time. On the second render, the React app can _synchronously_ read from the cache that was populated in the first render.
 
-This is a cool work-around, but it has real performance implications: you're doing every bit of expensive work twice.
+This is a cool work-around, but it has real performance implications: you're doing a lot of expensive things many times.
 
 ### Simple (Synchronous) SSR Render
 The steps to successfully render a _basic_ application with SSR are roughly:
@@ -35,12 +33,10 @@ The steps to successfully render a _basic_ application with SSR are roughly:
 2. Flush the generated HTML down to the client
 3. Load React on the client, and call [`hydrateRoot`](https://reactjs.org/docs/react-dom-client.html#hydrateroot), which instructs React to basically rebuild the "Virtual DOM" in memory, and ensure the current markup in the DOM matches with what React expects.
 
-This SSR setup will _not_ work with Apollo Client and React-Apollo because they need to perform work async.
+This SSR setup will _not_ work with Apollo Client and React-Apollo because they need to perform work async to gather data.
 
 ### Apollo Client SSR (Asynchronous)
-Apollo Client implements the "two-pass" rendering strategy, but it's a bit of a misnomer: Apollo has no limit on the number of "passes" it will perform[^2].
-
-The way you do SSR, with Apollo Client:
+Apollo Client implements the "two-pass" rendering strategy. The way you do SSR, with Apollo Client:
 
 1. Load the app in Node.js, and kick off Apollo Client's data-fetching on the server by passing the root component of the app to Apollo's [`getDataFromTree`](https://www.apollographql.com/docs/react/performance/server-side-rendering/#executing-queries-with-getdatafromtree).
 2. `getDataFromTree` calls React's `renderToString`, and waits for the synchronous render to complete. This causes all `useQuery` calls in _some_ components to kick-off their HTTP requests. `getDataFromTree` then discards the results from React.
@@ -51,7 +47,7 @@ The way you do SSR, with Apollo Client:
 7. Flush the generated HTML down to the client, along with a script tag that includes a serialized copy of the Apollo Client cache
 8. Load React on the client, construct an Apollo Client instance with the results from the serialized cache, and call [`hydrateRoot`](https://reactjs.org/docs/react-dom-client.html#hydrateroot), which instructs React to basically rebuild the "Virtual DOM" in memory, and ensure the current markup in the DOM matches with what React expects. During this process, React-Apollo will read query results from the cache instead of going to the network again.
 
-There's a [comment in the implementation of `getDataFromTree`](https://github.com/apollographql/apollo-client/blob/be9786f6d4228c79fad1d49f908e8d19ed4d9cbe/src/react/ssr/getDataFromTree.ts#L38-L42) that acknowledges this is non-ideal:
+There's a [comment in the implementation of `getDataFromTree`](https://github.com/apollographql/apollo-client/blob/be9786f6d4228c79fad1d49f908e8d19ed4d9cbe/src/react/ssr/getDataFromTree.ts#L38-L42) that acknowledges the render must start from the root:
 
 ```js
 // Always re-render from the rootElement, even though it might seem
@@ -63,7 +59,7 @@ There's a [comment in the implementation of `getDataFromTree`](https://github.co
 
 ## How we use Apollo Client
 
-Our usage of Apollo Client is pretty typical of what you'd see in most applications following Apollo's official documentation. Engineers divide their queries into multiple queries that are distributed amongst the appropriate components. This is the recommendation in Apollo's [Best Practices](https://www.apollographql.com/docs/react/data/operation-best-practices#query-only-the-data-you-need-where-you-need-it) in the official docs.
+My employer's usage of Apollo Client is pretty typical of what you'd see in most applications following Apollo's official documentation. Engineers divide their queries into multiple queries that are distributed amongst the appropriate components. This is the recommendation in Apollo's [Best Practices](https://www.apollographql.com/docs/react/data/operation-best-practices#query-only-the-data-you-need-where-you-need-it) in the official docs.
 
 > One of GraphQL's biggest advantages over a traditional REST API is its support for declarative data fetching. Each component can (and should) query exactly the fields it requires to render, with no superfluous data sent over the network.
 >
@@ -71,7 +67,7 @@ Our usage of Apollo Client is pretty typical of what you'd see in most applicati
 >
 > In the large majority of cases, a query such as the following should be divided into multiple queries that are distributed among the appropriate components
 
-My experience in Production over the last several years has shown me that this is _not good advice_ if you care about the performance of your app, both in SSR and during client rendering.
+My experience in Production over the last couple years has shown me that this is _not good advice_ if you care about the performance of your app, both on the server and on the client.
 
 ### Example
 
@@ -89,7 +85,7 @@ It may not be obvious, but this example requires calling React's `renderToString
 
 ### Wait, how many HTTP Requests is that?
 
-Yep, that's 7 separate HTTP requests to fetch data. While it occasionally makes sense to separate out HTTP requests for performance (fast vs slow queries), this is a bit excessive, especially since a selling point of GraphQL is limiting the number of HTTP requests on the client (compared to REST).
+That's 7 separate HTTP requests to fetch data. While it occasionally makes sense to separate out HTTP requests for performance (fast vs slow queries, critical vs secondary content), this is a bit excessive, especially since a selling point of GraphQL is limiting the number of HTTP requests on the client (compared to REST).
 
 Apollo offers one solution to this in the form of the [`BatchHttpLink`](https://www.apollographql.com/docs/react/api/link/apollo-link-batch-http/). It works by operating in 10ms (configurable) windows. Every 10ms, it grabs the last queries its seen, and batches them into 1 HTTP request.
 
@@ -123,7 +119,7 @@ Similar to the client-side, writing to the cache is _extremely_ expensive. For a
 
 ### Hydration/Client-Side Performance
 
-All the traces below were captured in Chrome 107.0.5304.105 on a newly purchased [2022 Moto G Power](https://www.motorola.com/us/smartphones-moto-g-power-gen-2/p) device running Android 11. According to [@slightlyoff](https://github.com/slightlyoff), this device is [representative of a mid-tier Android device in 2022](https://twitter.com/slightlylate/status/1587729481216987136). Don't worry, though: the Samsung website advertises this device as having `Lag-free performance` 😎.
+All the traces below were captured in Chrome 107.0.5304.105 on a newly purchased [2022 Moto G Power](https://www.motorola.com/us/smartphones-moto-g-power-gen-2/p) device running Android 11. According to [@slightlyoff](https://github.com/slightlyoff), this device is [representative of a mid-tier Android device in 2022](https://twitter.com/slightlylate/status/1587729481216987136).
 
 #### Query Parsing Costs
 
@@ -192,4 +188,4 @@ It's important to note that you pay this cost for every component on the page us
 I should note that not every `execute` and `afterExecute` phase is this expensive (although the cumulative costs still aren't great for large component trees). The challenge is that it's not remotely clear what makes these phases so expensive, or what the recommendations would be to remedy.
 
 [^1]: React now supports this directly via [`renderToPipeableStream`](https://reactjs.org/docs/react-dom-server.html#rendertopipeablestream) on the server and [`React.Suspense`](https://reactjs.org/docs/react-api.html#reactsuspense)
-[^2]: This can be observed by looking at the [recursive calls to `process` in `getDataFromTree`](https://github.com/apollographql/apollo-client/blob/32691bd2bae6229dfe2860e724e2cdbea5014fd0/src/react/ssr/getDataFromTree.ts#L54)
+[^2]: Apollo has no limit on the number of "passes" it will perform. This can be observed by looking at the [recursive calls to `process` in `getDataFromTree`](https://github.com/apollographql/apollo-client/blob/32691bd2bae6229dfe2860e724e2cdbea5014fd0/src/react/ssr/getDataFromTree.ts#L54)
