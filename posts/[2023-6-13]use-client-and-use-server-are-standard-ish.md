@@ -1,7 +1,7 @@
 <!---
 title: "use client" and "use server" are standard-ish
 description: React's magical "use client" and "use server" strings are standard JavaScript, but they're also...kind of not.
-socialImage: https://user-images.githubusercontent.com/5233399/244180224-4add9944-1627-4de5-b0b8-e1d5c0e4436a.png
+socialImage: https://user-images.githubusercontent.com/5233399/245847699-1f8096c5-18b4-4d38-aec6-1f4c3fdc1c2d.png
 slackLabel1: Reading Time
 slackLabel1Value: 4 minutes
 slackLabel2: Publish Date
