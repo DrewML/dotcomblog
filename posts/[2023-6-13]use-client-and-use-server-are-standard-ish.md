@@ -60,3 +60,7 @@ React isn't the first tool in the JavaScript ecosystem to introduce its own dire
 - `use sanity` and `use stricter`: Google proposed two new directions for JavaScript in 2015, "SaneScript" and "SoundScript." [SaneScript](https://github.com/tc39/notes/blob/main/meetings/2015-01/JSExperimentalDirections.pdf) used a `"use sanity"` directive, and [SoundScript](https://2ality.com/2015/02/soundscript.html) used a `"use stricter"` directive. The `SoundScript` proposal even supported passing arguments/options in a custom directive, `"use stricter+types"`.
 - `use nobabel`: Electron's `electron-compile` [supported a directive at one point](https://github.com/atom/atom/issues/8416#issuecomment-131979794) to disable Babel on specific files.
 - `use babel`: The Atom Editor [added built-in support for transpilation of any file using a directive](http://web.archive.org/web/20151226200823/http://blog.atom.io/2015/02/04/built-in-6to5.html)
+
+## Closing Thoughts
+
+I have reservations about Server Components, but I'm happy with this particular decision from the React team. Compared to other syntatic features like JSX, I appreciate that the use of standards-based syntax ensures that existing tools in the JavaScript ecosystem (ESLint/Prettier/TypeScript/etc) will continue to work.
