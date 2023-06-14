@@ -2,6 +2,10 @@
 title: "use client" and "use server" are standard-ish
 description: React's magical "use client" and "use server" strings are standard JavaScript, but they're also...kind of not.
 socialImage: https://user-images.githubusercontent.com/5233399/244180224-4add9944-1627-4de5-b0b8-e1d5c0e4436a.png
+slackLabel1: Reading Time
+slackLabel1Value: 4 minutes
+slackLabel2: Publish Date
+slackLabel2Value: June 13, 2023
 -->
 
 # "use client" and "use server" are standard-ish
