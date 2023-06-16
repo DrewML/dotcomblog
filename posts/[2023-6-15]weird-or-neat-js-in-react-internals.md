@@ -1,6 +1,6 @@
 <!---
-title: 4 Bizarre Uses of JavaScript in React Internals
-description: I really hate that the title of this article sounds like a Buzzfeed Listicle, but I'm so bad at naming things. React also does some bizarre stuff
+title: Weird or Neat JavaScript in React Internals
+description: I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has historically been very creative. Although it's almost always an implementation detail for its users, React is no stranger to creative problem solving
 socialImage: https://null
 slackLabel1: Reading Time
 slackLabel1Value: 5 minutes
@@ -9,7 +9,7 @@ slackLabel2Value: June 15, 2023
 draft: true
 -->
 
-# 4 Bizarre Uses of JavaScript in React Internals
+# Weird or Neat JavaScript in React Internals
 
 I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has [historically](https://www.sitepen.com/blog/windowname-transport) [been](https://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html) _very_ creative. Although it's almost always an implementation detail for its users, React is no stranger to creative problem solving. Here's 5 of the more bizarre uses of JavaScript lurking in React's internals
 
