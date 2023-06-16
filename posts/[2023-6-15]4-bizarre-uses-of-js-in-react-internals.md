@@ -57,7 +57,25 @@ try {
 The [original PR](https://github.com/facebook/react/pull/25516) explains some of the motivation
 
 > this gives deduping at the network layer to avoid costly mistakes and to make the simple case simple.
-## Custom Directive Pragmas
 
 ## Expando Properties on Promises
 
+In web development[^1], I believe the term "expando" was first introduced via [the `expando` property](https://www.jb51.net/shouce/dhtml/properties/expando.html) in Internet Explorer's [JScript](https://en.wikipedia.org/wiki/JScript). Over the years, I've seen it used to mean "adding a non-standard property to some host object or built-in."
+
+The [new `use()` hook](https://github.com/facebook/react/pull/25084) works by adding a few expando properties (`status`, `value`, and `reason`) to any Promise passed to it. These properties allow React to _synchronously_ inspect the result of a Promise, which is not possible with standard JavaScript Promises.
+
+The RFC [First Class Support for Promises](https://github.com/reactjs/rfcs/blob/9c21ca1a8e39d19338ba750ee3ff6f6c0724a51c/text/0000-first-class-support-for-promises.md#reading-the-result-of-a-promise-that-was-read-previously) makes it clear that the React team would prefer a native JavaScript API
+
+> Keep in mind that React will not add these extra fields to every promise, only those promise objects that are passed to use. It does not require modifying the global environment or the Promise prototype, and will not affect non-React code.
+>
+> Although this convention is not part of the JavaScript specification, we think it's a reasonable way to track a promise's result. The ideal is that the lifetime of the resolved value corresponds to the lifetime of the promise object. The most straightforward way to implement this is by adding a property directly to the promise.
+>
+> An alternative would be to use a WeakMap, which offers similar benefits. The advantage of using a property instead of a WeakMap is that other frameworks besides React can access these fields, too. For example, a data framework can set the status and value fields on a promise preemptively, before passing to React, so that React can unwrap it without waiting a microtask.
+>
+> If JavaScript were to ever adopt a standard API for synchronously inspecting the value of a promise, we would switch to that instead. (Indeed, if an API like Promise.inspect existed, this RFC would be significantly shorter.)
+
+## Custom Directive Pragmas
+
+TODO
+
+[^1]: Other languages (C#, Groovy) have similarish functionality using the term "expando", but the term has taken on a slightly different meaning over the years in JS land
