@@ -29,8 +29,34 @@ try {
 
 React's (undocumented) APIs for Suspense-enabled data fetching [work by throwing a `Promise` object](https://github.com/facebook/react/issues/17526#issuecomment-769151686) to signal that a request is in flight and rendering should be suspended. 
 
-## Monkey-patching Fetch
+## Monkey-patching Global Fetch
 
+_Note: Gated by `enableCache` and `enableFetchInstrumentation` feature flags_
+
+The in progress caching APIs (to go along with Suspense) have _some_ form of automatic HTTP request caching. This is done by [overwriting the global copy of `fetch` with a new wrapper](https://github.com/facebook/react/blob/fc929cf4ead35f99c4e9612a95e8a0bb8f5df25d/packages/react/src/ReactFetch.js#L128-L142)
+
+```js
+try {
+  // eslint-disable-next-line no-native-reassign
+  fetch = cachedFetch;
+} catch (error1) {
+  try {
+    // In case assigning it globally fails, try globalThis instead just in case it exists.
+    globalThis.fetch = cachedFetch;
+  } catch (error2) {
+    // Log even in production just to make sure this is seen if only prod is frozen.
+    // eslint-disable-next-line react-internal/no-production-logging
+    console.warn(
+      'React was unable to patch the fetch() function in this environment. ' +
+        'Suspensey APIs might not work correctly as a result.',
+    );
+  }
+}
+```
+
+The [original PR](https://github.com/facebook/react/pull/25516) explains some of the motivation
+
+> this gives deduping at the network layer to avoid costly mistakes and to make the simple case simple.
 ## Custom Directive Pragmas
 
 ## Expando Properties on Promises
