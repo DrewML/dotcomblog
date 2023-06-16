@@ -11,7 +11,7 @@ draft: true
 
 # 4 Bizarre Uses of JavaScript in React Internals
 
-I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has historically been _very_ creative. Although it's almost always an implementation detail for its users, React is no stranger to creative problem solving. Here's 5 of the more bizarre uses of JavaScript lurking in React's internals
+I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has [historically](https://www.sitepen.com/blog/windowname-transport) [been](https://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html) _very_ creative. Although it's almost always an implementation detail for its users, React is no stranger to creative problem solving. Here's 5 of the more bizarre uses of JavaScript lurking in React's internals
 
 ## Throwing Promises
 
