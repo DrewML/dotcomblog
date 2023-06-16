@@ -1,11 +1,11 @@
 <!---
 title: Weird or Neat JavaScript in React Internals
 description: I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has historically been very creative. Although it's almost always an implementation detail for its users, React is no stranger to creative problem solving
-socialImage: https://null
+socialImage: https://user-images.githubusercontent.com/5233399/246327123-7c72f3b9-2141-42dc-9558-a2aed6343d92.png
 slackLabel1: Reading Time
 slackLabel1Value: 5 minutes
 slackLabel2: Publish Date
-slackLabel2Value: June 15, 2023
+slackLabel2Value: June 16, 2023
 draft: true
 -->
 
