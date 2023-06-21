@@ -1,23 +1,55 @@
 <!---
-title: Weird or Neat JavaScript in React Internals
-description: I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has historically been very creative. Although it's almost always an implementation detail for its users, React is no stranger to creative problem solving
+title: React Internals do some Weird Shit™
+description: I really enjoy seeing all the different ways a programming language can be bent and used in unexpected ways, and the JavaScript community has historically been very creative. There's some new tricks/hacks/whatever hiding in React's internals
 socialImage: https://user-images.githubusercontent.com/5233399/246327123-7c72f3b9-2141-42dc-9558-a2aed6343d92.png
 slackLabel1: Reading Time
 slackLabel1Value: 5 minutes
 slackLabel2: Publish Date
-slackLabel2Value: June 16, 2023
+slackLabel2Value: June 20, 2023
 draft: true
 -->
 
-# Weird or Neat JavaScript in React Internals
+# React Internals do some Weird Shit™
 
-I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has [historically](https://www.sitepen.com/blog/windowname-transport) [been](https://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html) _very_ creative. Although it's almost always an implementation detail for its users, React is no stranger to creative problem solving. Here's 5 of the more bizarre uses of JavaScript lurking in React's internals
+I really enjoy seeing all the different ways a programming language can be bent and used in unexpected ways, and the JavaScript community has [historically](https://www.sitepen.com/blog/windowname-transport) [been](https://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html) [_very_](https://en.wikipedia.org/wiki/JSONP) good at pushing the language to its limits, despite some deficiencies. I wanted to jot down some of the JS tricks I've seen in use within the React source. Like them or not, you're probably shipping them to your users already if this post piqued your interest enough to click.
 
 ## Throwing Promises
 
 _Note: The [React Docs](https://react.dev/reference/react/Suspense) are very clear that this API is "unstable and undocumented"_
 
-React's "Suspense" feature enables data fetching libraries to interrupt rendering and signal to a parent component that they need to pause to fetch data. This feature relies on a quirk in JavaScript that allows the `throw` statement to receive _any_ value, not just an Error. 
+React's "Suspense" feature enables data fetching libraries to interrupt ("suspend") rendering and signal to a component that it needs to pause to fetch data. The API exposed to _consumers_ of Suspense-enabled libraries has an interesting feature: it almost looks invisible.
+
+```js
+function SomeComponentFetchingData({ id }) {
+   const data = mySuspenseDataSource.read(id);
+   return <div>{data.someprop}</div>;
+}
+```
+
+Although it doesn't stand out reading the code, the `read` function signals to React that `SomeComponentFetchingData` needs to Suspend, and it prevents the next line of code (the access to `data.someprop`) from executing until a Promise resolves. The `read` function does this by [_throwing a Promise_ synchronously](https://github.com/facebook/react/issues/17526#issuecomment-769151686):
+
+
+```js
+// pseudo-code, does not fulfill the full contract needed by React, and doesn't include error handling.
+function read(id) {
+   if (someCache.has(id)) {
+      return someCache.get(id); // synchronously return value if already fetched
+   }
+
+   if (pendingRequests.has(id)) {
+      throw promise; // if request for this data is in-flight, throw same Promise as we did before
+   }
+   
+   const promise = fetchSomeResource(id); // trigger data fetch
+   promise.then(res => {
+      pendingRequests.remove(id);
+      someCache.set(id, res);
+   });
+   throw promise; // throw promise to signal we're suspending
+}
+```
+
+Throwing promises works because of a fun little quirk in JavaScript: the `throw` statement takes _any_ value, not just an Error object.
 
 ```js
 try {
@@ -27,7 +59,7 @@ try {
 }
 ```
 
-React's (undocumented) APIs for Suspense-enabled data fetching [work by throwing a `Promise` object](https://github.com/facebook/react/issues/17526#issuecomment-769151686) to signal that a request is in flight and rendering should be suspended. 
+It feels gross, but I'm really impressed with the general idea of using `throw` to simulate allowing deeply nested returns in the callstack. It almost feels like if a generator function allowed anything else in that callstack to `yield`, not just the body of the generator itself.
 
 ## Monkey-patching Global Fetch
 
