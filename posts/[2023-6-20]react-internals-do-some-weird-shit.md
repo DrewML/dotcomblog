@@ -90,7 +90,7 @@ The [original PR](https://github.com/facebook/react/pull/25516) explains some of
 
 > this gives deduping at the network layer to avoid costly mistakes and to make the simple case simple.
 
-I can see the reasoning for _most_ of the tricks used in this post, but the monkey patching of `fetch` feels out of place. Unless I missed something else, it doesn't seem hugely beneficial compared to React exporting a `fetch` wrapper.
+I can see the reasoning for _most_ of the tricks used in this post, but the monkey patching of `fetch` feels out of place. Unless I missed something else, it doesn't seem hugely beneficial compared to React exporting a `fetch` wrapper. 
 
 ## Expando Properties on Promises
 
