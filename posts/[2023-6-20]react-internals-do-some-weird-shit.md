@@ -53,9 +53,9 @@ Throwing promises works because of a fun little quirk in JavaScript: the `throw`
 
 ```js
 try {
-   throw { an: 'object' };
+   throw 'lol';
 } catch (err) {
-   console.log('Error was', err); // Logs "Error was { an: 'object' }"
+   console.log(typeof err); // "string"
 }
 ```
 
