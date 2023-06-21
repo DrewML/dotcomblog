@@ -90,6 +90,8 @@ The [original PR](https://github.com/facebook/react/pull/25516) explains some of
 
 > this gives deduping at the network layer to avoid costly mistakes and to make the simple case simple.
 
+I can see the reasoning for _most_ of the tricks used in this post, but the monkey patching of `fetch` feels out of place. Unless I missed something else, it doesn't seem hugely beneficial compared to React exporting a `fetch` wrapper.
+
 ## Expando Properties on Promises
 
 In web development[^1], I believe the term "expando" was first introduced via [the `expando` property](https://www.jb51.net/shouce/dhtml/properties/expando.html) in Internet Explorer's [JScript](https://en.wikipedia.org/wiki/JScript). Over the years, I've seen it used to mean "adding a non-standard property to some host object or built-in."
