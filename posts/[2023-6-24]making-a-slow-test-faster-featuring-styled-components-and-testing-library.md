@@ -23,7 +23,7 @@ Before jumping into a test, I want to set some context:
 - Ecommerce app for grocery chain, built using React 17
 - Unit tests are run in Jest, and most React tests are written using `react-testing-library` (and its constituent parts like `user-event`)
 - App is pretty typical, using a lot of well-known tools from JavaScript land (`styled-components`, `apollo-client`, `react-router`, etc).
-- App is a few years old, and has had close to 100 unique contributors
+- App is a few years old, and has had close to 100 unique contributors (so testing patterns proliferate once added)
 
 ## Our Test Case
 
