@@ -20,11 +20,28 @@ In this post we're going to walk through the steps to diagnose _and_ remedy a re
 Before jumping into a test, I want to set some context:
 
 - This is from my employer's code base (not public), so code has been modified in examples to be more generic
-- The application is built using React 17
+- Ecommerce app for grocery chain, built using React 17
 - Unit tests are run in Jest, and most React tests are written using `react-testing-library` (and its constituent parts like `user-event`)
 - App is pretty typical, using a lot of well-known tools from JavaScript land (`styled-components`, `apollo-client`, `react-router`, etc).
 - App is a few years old, and has had close to 100 unique contributors
 
 ## Our Test Case
 
-TODO
+Our shoppers have a page where they're shown products and categories they've previously saved, and they're able to quickly access them again. If the shopper has more than 15 saved items, we paginate the results. Our test case is verifying the happy path for pagination:
+
+```js
+it('paginates when > 15 products', async () => {
+  render(<SavedPage products={products} categories={categories} />);
+
+  // Switch to saved Products view
+  await userEvent.click(screen.getByLabelText(/Select Products/));
+  // Verify we're on the products view, and have > 15 products
+  expect(await screen.findByRole('heading', { name: /19 products/ })).toBeInTheDocument();
+  // Verify we're showing 15 products by checking for total # of add to cart buttons
+  expect(screen.getAllByRole('button', { name: /Add to cart/ })).toHaveLength(15);
+  // click to page 2
+  await userEvent.click(screen.getByRole('button', { name: /Go to page 2/ }));
+  // Verify we're showing the correct number of products on page 2
+  expect(screen.getAllByRole('button', { name: /Add to cart/ })).toHaveLength(4);
+});
+```
