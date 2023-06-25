@@ -6,7 +6,6 @@ slackLabel1: Reading Time
 slackLabel1Value: 7 minutes
 slackLabel2: Publish Date
 slackLabel2Value: June 25, 2023
-draft: true
 -->
 
 # React Internals do some Weird Shit™
