@@ -1,17 +1,17 @@
 <!---
 title: React Internals do some Weird Shit™
-description: I really enjoy seeing all the different ways a programming language can be bent and used in unexpected ways, and the JavaScript community has historically been very creative. There's some new tricks/hacks/whatever hiding in React's internals
+description: I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has historically been very good at pushing the language to its limits, despite some deficiencies. I wanted to jot down some of the JS tricks I've seen in use within the React source
 socialImage: https://user-images.githubusercontent.com/5233399/248584278-256e1376-d48f-439c-ae65-86d344abd50d.png
 slackLabel1: Reading Time
-slackLabel1Value: 5 minutes
+slackLabel1Value: 7 minutes
 slackLabel2: Publish Date
-slackLabel2Value: June 20, 2023
+slackLabel2Value: June 25, 2023
 draft: true
 -->
 
 # React Internals do some Weird Shit™
 
-I really enjoy seeing all the different ways a programming language can be bent and used in unexpected ways, and the JavaScript community has [historically](https://www.sitepen.com/blog/windowname-transport) [been](https://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html) [_very_](https://en.wikipedia.org/wiki/JSONP) good at pushing the language to its limits, despite some deficiencies. I wanted to jot down some of the JS tricks I've seen in use within the React source. Like them or not, you're probably shipping them to your users already if this post piqued your interest enough to click.
+I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has [historically](https://www.sitepen.com/blog/windowname-transport) [been](https://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html) [_very_](https://en.wikipedia.org/wiki/JSONP) good at pushing the language to its limits, despite some deficiencies. I wanted to jot down some of the JS tricks I've seen in use within the React source. Like them or not, they're probably in your bundle, so it's worth knowing the how and why.
 
 ## Throwing Promises
 
@@ -21,31 +21,40 @@ React's "Suspense" feature enables data fetching libraries to interrupt ("suspen
 
 ```js
 function SomeComponentFetchingData({ id }) {
-   const data = mySuspenseDataSource.read(id);
+   const data = readFromSuspenseEnabledDataSource(id);
    return <div>{data.someprop}</div>;
 }
 ```
 
-Although it doesn't stand out reading the code, the `read` function signals to React that `SomeComponentFetchingData` needs to Suspend, and it prevents the next line of code (the access to `data.someprop`) from executing until a Promise resolves. The `read` function does this by [_throwing a Promise_ synchronously](https://github.com/facebook/react/issues/17526#issuecomment-769151686):
+Although it doesn't stand out reading the code, the `readFromSuspenseEnabledDataSource` function signals to React that `SomeComponentFetchingData` needs to Suspend, and it prevents the next line of code (the access to `data.someprop`) from executing until a Promise resolves. The `readFromSuspenseEnabledDataSource` function does this by [_throwing a Promise_ synchronously](https://github.com/facebook/react/issues/17526#issuecomment-769151686):
 
 
 ```js
 // pseudo-code, does not fulfill the full contract needed by React, and doesn't include error handling.
-function read(id) {
+function readFromSuspenseEnabledDataSource(id) {
    if (someCache.has(id)) {
-      return someCache.get(id); // synchronously return value if already fetched
+      // synchronously return value if already fetched
+      return someCache.get(id);
    }
 
    if (pendingRequests.has(id)) {
-      throw promise; // if request for this data is in-flight, throw same Promise as we did before
+      // if request for this data is in-flight,
+      // throw same Promise as we did before
+      throw promise;
    }
    
-   const promise = fetchSomeResource(id); // trigger data fetch
+   // trigger data fetch
+   const promise = fetchSomeResource(id);
    promise.then(res => {
+      // remove promise from pending list
+      // so we know it has completed
       pendingRequests.remove(id);
+      // record result in our cache so we can
+      // return result synchronously later
       someCache.set(id, res);
    });
-   throw promise; // throw promise to signal we're suspending
+   // throw promise to signal we're suspending
+   throw promise;
 }
 ```
 
@@ -59,7 +68,7 @@ try {
 }
 ```
 
-It feels gross, but I'm really impressed with the general idea of using `throw` to simulate allowing deeply nested returns in the callstack. It almost feels like if a generator function allowed anything else in that callstack to `yield`, not just the body of the generator itself.
+It _feels_ gross, but I'm really impressed with the general idea of using `throw` to allow any function in a component's callstack to yield some value. It's probably not super useful as a pattern outside of React, though, as there's quite a few constraints placed on React components that made this design feasible (mainly the management of state and effects).
 
 ## Monkey-patching Global Fetch
 
@@ -92,6 +101,16 @@ The [original PR](https://github.com/facebook/react/pull/25516) explains some of
 
 I can see the reasoning for _most_ of the tricks used in this post, but the monkey patching of `fetch` feels out of place. Unless I missed something else, it doesn't seem hugely beneficial compared to React exporting a `fetch` wrapper. 
 
+It is worth noting that this function is _mostly_ a proxy to the native `fetch`, as it [checks whether the call to fetch is happening within a React component context](https://github.com/facebook/react/blob/fc929cf4ead35f99c4e9612a95e8a0bb8f5df25d/packages/react/src/ReactFetch.js#L49-L53):
+
+```js
+const dispatcher = ReactCurrentCache.current;
+if (!dispatcher) {
+  // We're outside a cached scope.
+  return originalFetch(resource, options);
+}
+```
+
 ## Expando Properties on Promises
 
 In web development[^1], I believe the term "expando" was first introduced via [the `expando` property](https://www.jb51.net/shouce/dhtml/properties/expando.html) in Internet Explorer's [JScript](https://en.wikipedia.org/wiki/JScript). Over the years, I've seen it used to mean "adding a non-standard property to some host object or built-in."
@@ -110,6 +129,26 @@ The RFC [First Class Support for Promises](https://github.com/reactjs/rfcs/blob/
 
 ## Custom Directive Pragmas
 
-TODO
+A "Directive Pragma" is a feature of JavaScript that gives special meaning to a string literal at the top of a Script, Module, or Function body. The 1 well-known Pragma that most JavaScript developers have seen is to enable Strict mode:
+
+```js
+'use strict'; // strict module
+
+function abc() {
+   'use strict'; // strict function
+}
+```
+
+With Server Components and Server Actions, React introduced 2 _custom_ Directive Pragmas:
+
+```js
+'use client'; // Mark that a file contains "Client Components"
+
+function handleSomeFormSubmit() {
+   'use server'; // Mark that a function is a "Server Action"
+}
+```
+
+I've written more about this in another post, ["use client" and "use server" are standard-ish](https://blog.levineandrew.com/use-client-and-use-server-are-standard-ish).
 
 [^1]: Other languages (C#, Groovy) have similarish functionality using the term "expando", but the term has taken on a slightly different meaning over the years in JS land
