@@ -67,7 +67,7 @@ try {
 }
 ```
 
-It _feels_ gross, but I'm really impressed with the general idea of using `throw` to allow any function in a component's callstack to yield some value. It's probably not super useful as a pattern outside of React, though, as there's quite a few constraints placed on React components that made this design feasible (mainly the management of state and effects).
+It _feels_ gross, but I'm really impressed with the general idea of using `throw` to allow any function in a component's callstack to yield some value. It's probably not super useful as a pattern outside of React, though, as there's quite a few constraints placed on React components that made this design feasible (mainly the explicit management of state and effects).
 
 ## Monkey-patching Global Fetch
 
