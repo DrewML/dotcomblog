@@ -112,7 +112,7 @@ if (!dispatcher) {
 
 ## Expando Properties on Promises
 
-In web development[^1], I believe the term "expando" was first introduced via [the `expando` property](https://www.jb51.net/shouce/dhtml/properties/expando.html) in Internet Explorer's [JScript](https://en.wikipedia.org/wiki/JScript). Over the years, I've seen it used to mean "adding a non-standard property to some host object or built-in."
+In web development[^1], I believe the term "expando" was first introduced via [the `expando` property](https://www.jb51.net/shouce/dhtml/properties/expando.html) in Internet Explorer's [JScript](https://en.wikipedia.org/wiki/JScript). Over time, I've seen it expand its definition to something like "adding a non-standard property to some host object or built-in."
 
 The [new `use()` hook](https://github.com/facebook/react/pull/25084) works by adding a few expando properties (`status`, `value`, and `reason`) to any Promise passed to it. These properties allow React to _synchronously_ inspect the result of a Promise, which is not possible with standard JavaScript Promises.
 
@@ -150,4 +150,4 @@ function handleSomeFormSubmit() {
 
 I've written more about this in another post, ["use client" and "use server" are standard-ish](https://blog.levineandrew.com/use-client-and-use-server-are-standard-ish).
 
-[^1]: Other languages (C#, Groovy) have similarish functionality using the term "expando", but the term has taken on a slightly different meaning over the years in JS land
+[^1]: Other languages (C#, Groovy) have similarish concepts using the term "expando", but the term has taken on a very specific meaning in JS land
