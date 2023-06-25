@@ -1,7 +1,7 @@
 <!---
 title: React Internals do some Weird Shit™
 description: I really enjoy seeing all the different ways a programming language can be bent and used in unexpected ways, and the JavaScript community has historically been very creative. There's some new tricks/hacks/whatever hiding in React's internals
-socialImage: https://user-images.githubusercontent.com/5233399/248584040-b211de7b-c8cb-4423-a40a-84d652f6bf4e.png
+socialImage: https://user-images.githubusercontent.com/5233399/248584278-256e1376-d48f-439c-ae65-86d344abd50d.png
 slackLabel1: Reading Time
 slackLabel1Value: 5 minutes
 slackLabel2: Publish Date
