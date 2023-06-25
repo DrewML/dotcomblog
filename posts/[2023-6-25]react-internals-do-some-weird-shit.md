@@ -8,7 +8,7 @@ slackLabel2: Publish Date
 slackLabel2Value: June 25, 2023
 -->
 
-# React Internals do some Weird Shit™
+# React Internals do some _Weird Shit™_
 
 I really enjoy seeing all the different ways a programming language can be used in unexpected ways, and the JavaScript community has [historically](https://www.sitepen.com/blog/windowname-transport) [been](https://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html) [_very_](https://en.wikipedia.org/wiki/JSONP) good at pushing the language to its limits, despite some deficiencies. I wanted to jot down some of the JS tricks I've seen in use within the React source. Like them or not, they're probably in your bundle, so it's worth knowing the how and why.
 
