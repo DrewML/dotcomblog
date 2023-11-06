@@ -1,7 +1,7 @@
 <!---
 title: Hide Your Large JSON Files from The TypeScript Compiler
 description: I spent some time at work looking into speeding up TypeScript type checking via tsc. One of the biggest wins I found was also one of the simplest to implement.
-socialImage: https://github.com/DrewML/dotcomblog/assets/5233399/84efd441-b6af-4d2d-82ad-598959a8666a
+socialImage: https://user-images.githubusercontent.com/5233399/280854512-09dff30c-d44a-418a-a2cf-2cc777706ed8.png
 slackLabel1: Reading Time
 slackLabel1Value: 3 minutes
 slackLabel2: Publish Date
