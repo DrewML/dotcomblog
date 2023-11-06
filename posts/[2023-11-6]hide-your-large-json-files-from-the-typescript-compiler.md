@@ -14,10 +14,11 @@ I spent some time at work looking into speeding up TypeScript type checking via 
 
 ## resolveJsonModule
 
-TypeScript supports a pretty cool feature, `resolveJsonModule,` which gives you 2 key things:
+TypeScript supports a pretty cool feature, `resolveJsonModule`, which gives you 2 key things:
 
 1. Will prevent the compiler from barking if you import a JSON file as if it was a JavaScript module
 2. Will infer types based on the shape of the imported JSON
+
 
 Unfortunately, the inference provided by this feature can become quite expensive if you have massive JSON files being imported anywhere.
 
