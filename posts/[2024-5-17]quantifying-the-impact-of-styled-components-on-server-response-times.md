@@ -65,7 +65,7 @@ With the boring parts done, we now can capture _useful_ trace data and begin exp
 
 Below is a screenshot zoomed in to just the portions of the trace that involve rendering React components. I have excluded the portions of the trace that account for the incoming HTTP request and initial data fetches. We can say that React rendering happened between **2560ms** (when Next.js calls `renderToReadableStream`) and **2810ms** timestamps, so it took roughly **250ms** to render our component tree.
 
-<img width="3193" alt="image" src="https://github-production-user-asset-6210df.s3.amazonaws.com/5233399/4af40b9d-2cc8-461f-a268-66e10d674e4e">
+<img width="3193" alt="image" src="https://user-images.githubusercontent.com/5233399/4af40b9d-2cc8-461f-a268-66e10d674e4e">
 
 Now that I know how much time the total tree took to render, it's time to isolate what percentage of this work was Styled Components.
 
