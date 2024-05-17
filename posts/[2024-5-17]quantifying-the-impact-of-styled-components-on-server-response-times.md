@@ -63,8 +63,30 @@ With the boring parts done, we now can capture _useful_ trace data and begin exp
 
 ### Zoomed Out
 
-Below is a screenshot zoomed in to just the portions of the trace that involve rendering React components. I have excluded the portions of the trace that account for the incoming HTTP request and initial data fetches. We can say that React rendering happened between **2560ms** and **2810ms** timestamps, so it took roughly **250ms** to render our component tree.
+Below is a screenshot zoomed in to just the portions of the trace that involve rendering React components. I have excluded the portions of the trace that account for the incoming HTTP request and initial data fetches. We can say that React rendering happened between **2560ms** (when Next.js calls `renderToReadableStream`) and **2810ms** timestamps, so it took roughly **250ms** to render our component tree.
 
 <img width="3193" alt="image" src="https://github.com/DrewML/dotcomblog/assets/5233399/4af40b9d-2cc8-461f-a268-66e10d674e4e">
 
 Now that I know how much time the total tree took to render, it's time to isolate what percentage of this work was Styled Components.
+
+### Identify Stacks from Styled Components
+
+To get an aggregate view of the costs of Styled Components, we first need to identify which callstacks in the trace are from the library.
+
+As far as I can tell, the large majority of heavy lifting done by a Styled Component is done during render by the internal `useStyledComponentImpl` hook, as seen in the screenshow below:
+
+<img width="643" alt="image" src="https://github.com/DrewML/dotcomblog/assets/5233399/a19dde23-b4bc-43f4-89a5-32706262a70b">
+
+Once `useStyledComponentImpl` was identified as the main source of heavy lifting, it started to stand out visually that a decent chunk of time is probably spent rendering these styles
+
+<img width="2214" alt="image" src="https://github.com/DrewML/dotcomblog/assets/5233399/c8a35590-94c6-4b87-ac80-968e6649011e">
+
+### Collecting Totals
+
+Now that we've identified `useStyledComponentImpl`, we can switch over to [SpeedScope](https://www.speedscope.app/), a really useful CPU Trace viewer with some additional features not present in Chrome DevTools.
+
+In SpeedScope, we can click on a frame in the timeline and get the totals for time spent in that function and its callees across the entirety of the trace.
+
+<img width="433" alt="image" src="https://github.com/DrewML/dotcomblog/assets/5233399/32734bff-77f0-4b06-bda8-89d7723ab583">
+
+According to this data, of the roughly **250ms** we spent rendering the component tree, **117ms** of this was spent generating and injecting CSS in Styled Components. This means, assuming my logic is right, _~47% of SSR time was spent generating and injecting css from Styled Components_.
