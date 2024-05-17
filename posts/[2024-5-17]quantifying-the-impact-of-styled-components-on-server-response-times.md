@@ -90,3 +90,9 @@ In SpeedScope, we can click on a frame in the timeline and get the totals for ti
 <img width="433" alt="image" src="https://github.com/DrewML/dotcomblog/assets/5233399/32734bff-77f0-4b06-bda8-89d7723ab583">
 
 According to this data, of the roughly **250ms** we spent rendering the component tree, **117ms** of this was spent generating and injecting CSS in Styled Components. This means, assuming my logic is right, _~47% of SSR time was spent generating and injecting css from Styled Components_.
+
+# Conclusion
+
+I feel confident at this point saying "Styled Components _drastically_ decreases the performance of SSR for our React app." Next steps for the day job will include capturing more real Production metrics around the costs of `useStyledComponentImpl` so we can compare the costs under load in a real environment vs on a developer laptop.
+
+It's worth noting that all the takeaways from this post assume all my profiling and testing was sound, which is always a challenge when doing Performance optimization work. Please reach out if you see anything inaccurate in this post that needs adjustment and I'll make the appropriate edits.
