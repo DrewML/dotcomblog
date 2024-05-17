@@ -40,3 +40,22 @@ If you're on a newer version of React, this may not be a problem for you. The Re
 5. Unminified copies of `ReactDOM` will be written to `build/node_modules`
 
 At this point, I was able to go into my app's `node_modules/react-dom/cjs` dir and manually update to my new unminified copy.
+
+## Unminified Application Code
+
+Finally, I wanted to see my app's component and hook names in traces, so I could help orient myself when digging through a large trace. This is a `Next.js` app using Webpack, so I was able to make this change by modifying the Webpack config in `next.config.js`:
+
+```js
+webpackConfig.optimization.minimizer = [
+  new TerserPlugin({
+    parallel: true,
+    terserOptions: {
+      keep_fnames: true,
+      keep_classnames: true,
+    },
+  }),
+];
+```
+
+## The Fun Part: Analyzing a Trace
+
