@@ -77,7 +77,7 @@ Now that I know how much time the total tree took to render, it's time to isolat
 
 To get an aggregate view of the costs of Styled Components, we first need to identify which callstacks in the trace are from the library.
 
-As far as I can tell, the large majority of heavy lifting done by a Styled Component is done during render by the internal `useStyledComponentImpl` hook, as seen in the screenshow below:
+As far as I can tell, the large majority of heavy lifting done by a Styled Component is done during render by the [internal `useStyledComponentImpl` hook](https://github.com/styled-components/styled-components/blob/v5.3.10/packages/styled-components/src/models/StyledComponent.js#L99), as seen in the screenshow below:
 
 <img width="643" alt="image" src="../img/useStyledComponentImpl.png">
 
