@@ -1,7 +1,7 @@
 <!---
 title: Quantifying the Impact of Styled Components on Server Response Times
 description: Working off of a suspicion, I spent some time at work trying to properly attribute the amount of time spent during SSR to Styled Components
-socialImage: https://user-images.githubusercontent.com/5233399/235488415-310fbaad-a1e5-475e-b929-c4e87ef2811d.jpg
+socialImage: https://blog.levineandrew.com/img/quantifying-sc-social.jpg
 draft: true
 slackLabel1: Reading Time
 slackLabel1Value: 4 minutes
